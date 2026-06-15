@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Books — Attached Line Items Mockup</title>
+<style>
+  :root{
+    --bg:#eceef2; --panel:#fff; --ink:#1a2230; --ink-2:#39424f; --muted:#5b6675; --muted-2:#8b93a1;
+    --line:#cdd2da; --line-2:#dfe3ea; --line-strong:#aeb5c0;
+    --accent:#1c1c1c; --ok:#1f9d57;
+    --mono:"Consolas","SF Mono",Menlo,monospace;
+    --sans:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);font-family:var(--sans);font-size:13px;color:var(--ink);padding:28px}
+  .tblwrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+  table{border-collapse:separate;border-spacing:0;width:100%;min-width:max-content;font-size:12.5px}
+
+  /* ── main grid header (navy) ── */
+  thead th{position:sticky;top:0;background:#16203a;color:#eef1f7;text-align:left;font-weight:650;font-size:10.5px;
+    text-transform:uppercase;letter-spacing:.06em;padding:13px 16px;white-space:nowrap;border-right:1px solid rgba(255,255,255,.07)}
+  thead th:last-child{border-right:none}
+  thead th.r{text-align:right}thead th.c{text-align:center}
+
+  /* ── main voucher rows ── */
+  tbody td{padding:13px 16px;border-bottom:1px solid var(--line-2);border-right:1px solid var(--line-2);white-space:nowrap;vertical-align:middle;color:var(--ink-2)}
+  tbody td:last-child{border-right:none}
+  tr.main{cursor:pointer}
+  tr.main:nth-child(odd) td{background:#fafbfc}
+  tr.main.open td{background:#e8edf6;font-weight:600}
+  .num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+  .c{text-align:center}.r{text-align:right}
+  .vno{font-family:var(--mono);font-weight:600;color:var(--ink)}
+  .pname{font-weight:600;color:var(--ink)}
+  .id{font-family:var(--mono);color:var(--muted)}
+  .muted{color:var(--muted)}
+  .chev{display:inline-block;color:var(--muted-2);transition:.15s;font-size:11px}
+  tr.main.open .chev{transform:rotate(90deg);color:var(--ink)}
+  .ck{display:inline-block;width:18px;height:18px;border:1.5px solid var(--line-strong);border-radius:5px;background:var(--panel);vertical-align:middle}
+  .ck.on{background:var(--ok);border-color:var(--ok)}
+
+  /* ── attached line-item ROWS (same table, directly below main) ── */
+  /* a subtle left accent bar ties the block to its main row */
+  tr.li-head th{
+    background:#eef1f5;color:var(--ink-2);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+    padding:9px 16px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--line-strong);border-top:2px solid #16203a;
+    position:static;
+  }
+  tr.li-head th.r{text-align:right}tr.li-head th.c{text-align:center}
+  tr.li td{
+    padding:11px 16px;font-size:12px;background:#f6f8fb;border-bottom:1px solid var(--line-2);color:var(--ink-2);
+  }
+  tr.li:last-of-type td{border-bottom:2px solid var(--line-strong)}
+  tr.li .num{font-weight:600}
+  /* indent the whole attached block slightly so it reads as belonging to the row above */
+  tr.li-head th:first-child, tr.li td:first-child{box-shadow:inset 4px 0 0 #16203a}
+  tr.li-foot td{background:#eef1f5;font-weight:700;color:var(--ink);padding:11px 16px;border-bottom:2px solid var(--line-strong);font-family:var(--mono)}
+  tr.li-foot td.lbl{font-family:var(--sans);text-transform:uppercase;letter-spacing:.05em;font-size:10px;text-align:right}
+  .badge-n{font-family:var(--mono);font-weight:700;color:#16203a}
+  .hint{margin:0 0 14px;color:var(--muted);font-size:12.5px}
+</style>
+</head>
+<body>
+  <p class="hint">Click a MAIN row — line items open as rows attached directly beneath it, inside the same table (shared columns, no separate boxed table). A dark left bar + top rule ties the block to its voucher.</p>
+  <div class="tblwrap">
+    <table>
+      <thead><tr>
+        <th></th><th>ID</th><th>Voucher No</th><th>Period</th><th>Date</th><th>Customer Name</th>
+        <th class="r">Lines</th><th class="r">Sum Qty</th><th class="r">Basic Value</th><th class="c">Status</th>
+        <th class="c">Gen</th><th class="c">Rec</th><th>Remarks</th><th class="c">Actions</th>
+      </tr></thead>
+      <tbody>
+        <!-- voucher 1 (expanded) -->
+        <tr class="main open" onclick="t(this)">
+          <td><span class="chev">▶</span></td>
+          <td class="id">365</td><td class="vno">SAL·0036</td><td class="muted">Jun 2026</td><td>07 Jun 2026</td><td>Rane Engine Valves</td>
+          <td class="num"><span class="badge-n">3</span></td><td class="num">540</td><td class="num">1,86,420.00</td>
+          <td class="c muted">Open</td><td class="c"><span class="ck on"></span></td><td class="c"><span class="ck"></span></td><td class="muted">Partial dispatch</td>
+          <td class="c muted">✎ ✐ 🗑</td>
+        </tr>
+        <tr class="li-head">
+          <th></th><th>Line</th><th>Part Name</th><th>Ref No</th><th class="r">Inv Qty</th><th class="r">Act Qty</th><th class="c">UOM</th>
+          <th class="r">Unit Price</th><th class="r">PO Price</th><th class="r">Basic Value</th><th class="r">Pkgs</th><th>Token Ref</th><th class="r">Net Wt</th><th></th>
+        </tr>
+        <tr class="li">
+          <td></td><td class="muted">1</td><td class="pname">BRKT BEARING MQ4I P0230</td><td class="muted">REV-A</td>
+          <td class="num">200</td><td class="num">200</td><td class="c muted">NOS</td><td class="num">350.00</td><td class="num">350.00</td><td class="num">70,000.00</td>
+          <td class="num">4</td><td class="muted">T-31…34</td><td class="num">428.00</td><td></td>
+        </tr>
+        <tr class="li">
+          <td></td><td class="muted">2</td><td class="pname">BRKT BEARING SP3I BM150</td><td class="muted">REV-A</td>
+          <td class="num">180</td><td class="num">180</td><td class="c muted">NOS</td><td class="num">341.80</td><td class="num">341.80</td><td class="num">61,524.00</td>
+          <td class="num">3</td><td class="muted">T-35…37</td><td class="num">385.20</td><td></td>
+        </tr>
+        <tr class="li">
+          <td></td><td class="muted">3</td><td class="pname">BRKT BEARING ZX9 K100</td><td class="muted">REV-B</td>
+          <td class="num">160</td><td class="num">160</td><td class="c muted">NOS</td><td class="num">343.10</td><td class="num">343.10</td><td class="num">54,896.00</td>
+          <td class="num">3</td><td class="muted">T-38…40</td><td class="num">342.40</td><td></td>
+        </tr>
+        <tr class="li-foot">
+          <td></td><td colspan="3" class="lbl">Total</td><td class="num">540</td><td class="num">540</td><td></td><td></td><td></td><td class="num">1,86,420.00</td>
+          <td class="num">10</td><td></td><td class="num">1,155.60</td><td></td>
+        </tr>
+
+        <!-- voucher 2 (collapsed) -->
+        <tr class="main" onclick="t(this)">
+          <td><span class="chev">▶</span></td>
+          <td class="id">364</td><td class="vno">SAL·0035</td><td class="muted">Jun 2026</td><td>06 Jun 2026</td><td>Sundaram Fasteners</td>
+          <td class="num"><span class="badge-n">2</span></td><td class="num">300</td><td class="num">98,400.00</td>
+          <td class="c muted">Closed</td><td class="c"><span class="ck on"></span></td><td class="c"><span class="ck on"></span></td><td class="muted">—</td>
+          <td class="c muted">✎ ✐ 🗑</td>
+        </tr>
+
+        <!-- voucher 3 (collapsed) -->
+        <tr class="main" onclick="t(this)">
+          <td><span class="chev">▶</span></td>
+          <td class="id">363</td><td class="vno">SAL·0034</td><td class="muted">Jun 2026</td><td>05 Jun 2026</td><td>Brakes India</td>
+          <td class="num"><span class="badge-n">4</span></td><td class="num">820</td><td class="num">2,74,900.00</td>
+          <td class="c muted">Open</td><td class="c"><span class="ck on"></span></td><td class="c"><span class="ck"></span></td><td class="muted">—</td>
+          <td class="c muted">✎ ✐ 🗑</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+<script>
+  function t(row){
+    row.classList.toggle('open');
+    let n=row.nextElementSibling;
+    while(n && (n.classList.contains('li-head')||n.classList.contains('li')||n.classList.contains('li-foot'))){
+      n.style.display = n.style.display==='none' ? '' : 'none';
+      n=n.nextElementSibling;
+    }
+  }
+</script>
+</body>
+</html>

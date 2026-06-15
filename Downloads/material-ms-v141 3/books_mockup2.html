@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Books — Design Mockup v2</title>
+<style>
+  :root{
+    --bg:#fbfbfa; --panel:#fff; --ink:#15110d; --ink-2:#4b443c; --muted:#857b6f; --muted-2:#a89e90;
+    --line:#ece8e1; --line-2:#f3f0ea; --line-strong:#dcd6cb;
+    --accent:#1a1a1a; --accent-2:#b45309; --accent-bg:#fdf6ec;
+    --ok:#15803d; --ok-bg:#edf7ee; --warn:#b45309; --warn-bg:#fdf3e7; --err:#b91c1c;
+    --mono:"SF Mono","JetBrains Mono",ui-monospace,Consolas,monospace;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+    --shadow:0 1px 0 rgba(21,17,13,.04);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13px;-webkit-font-smoothing:antialiased}
+  .page{max-width:1340px;margin:0 auto;padding:0 0 70px}
+
+  /* ── masthead: editorial, hairline ruled ── */
+  .mast{padding:34px 32px 0}
+  .mast .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent-2);margin-bottom:14px}
+  .mast h1{font-family:var(--sans);font-size:30px;font-weight:700;letter-spacing:-.02em;margin:0;line-height:1.1}
+  .mast .meta{display:flex;align-items:baseline;gap:0;margin-top:22px;border-top:2px solid var(--ink);border-bottom:1px solid var(--line-strong)}
+  .mast .m{padding:14px 26px 14px 0;margin-right:26px;border-right:1px solid var(--line-strong)}
+  .mast .m:last-child{border-right:none}
+  .mast .m .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:5px}
+  .mast .m .v{font-family:var(--mono);font-size:20px;font-weight:600;letter-spacing:-.01em}
+  .mast .m .v small{font-family:var(--sans);font-size:12px;color:var(--muted)}
+
+  /* ── controls row ── */
+  .controls{display:flex;align-items:center;gap:14px;padding:18px 32px;flex-wrap:wrap}
+  .search{flex:1;min-width:240px;position:relative}
+  .search input{width:100%;height:40px;border:none;border-bottom:1.5px solid var(--line-strong);background:transparent;padding:0 0 0 26px;font-size:14px;font-family:inherit;color:var(--ink)}
+  .search input:focus{outline:none;border-color:var(--accent)}
+  .search svg{position:absolute;left:0;top:11px;color:var(--muted)}
+  .tabs{display:flex;gap:2px}
+  .tabs button{border:none;background:transparent;padding:9px 4px;margin:0 12px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;border-bottom:2px solid transparent}
+  .tabs button.on{color:var(--ink);border-bottom-color:var(--accent-2)}
+  .lnk{font-size:12.5px;font-weight:600;color:var(--ink-2);text-decoration:none;padding:9px 14px;border:1px solid var(--line-strong);border-radius:8px;cursor:pointer;background:var(--panel)}
+  .lnk:hover{border-color:var(--accent)}
+  .lnk.dark{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  .section-label{padding:8px 32px;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:12px}
+  .section-label::after{content:"";flex:1;height:1px;background:var(--line-strong)}
+
+  .tblwrap{padding:4px 32px 0;overflow-x:auto}
+  table{border-collapse:collapse;border-spacing:0;width:100%;font-size:12.5px;min-width:max-content;border:1px solid #111}
+  thead th{text-align:left;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+    padding:11px 16px;white-space:nowrap;border:1px solid #111;background:#f7f4ee;position:sticky;top:0;z-index:2}
+  thead th.r{text-align:right}thead th.c{text-align:center}
+  tbody td{padding:15px 16px;border:1px solid #111;white-space:nowrap;vertical-align:middle;color:var(--ink-2)}
+  .r{text-align:right}.c{text-align:center}
+  .num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+  .id{font-family:var(--mono);color:var(--muted);font-size:11.5px}
+  .vno{font-family:var(--mono);font-weight:600;color:var(--ink);letter-spacing:-.02em}
+  .pname{font-weight:600;color:var(--ink)}
+  .sub{display:block;font-size:11px;color:var(--muted);margin-top:2px;font-weight:400}
+  .toks{font-family:var(--mono);font-size:10.5px;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;display:inline-block;white-space:nowrap}
+  .muted{color:var(--muted)}
+
+  /* status — text + leading rule, not a pill */
+  .st{display:inline-flex;align-items:center;gap:7px;font-weight:650;font-size:11.5px}
+  .st .bar{width:3px;height:13px;border-radius:2px;background:currentColor}
+  .st.open{color:var(--ok)}.st.closed{color:var(--muted)}
+
+  /* checks: minimal — filled square tick / hollow */
+  .ck{display:inline-block;width:18px;height:18px;border:1.5px solid var(--line-strong);border-radius:5px;position:relative;vertical-align:middle}
+  .ck.on{background:var(--ink);border-color:var(--ink)}
+  .ck.on::after{content:"";position:absolute;left:5px;top:1.5px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+  .pa{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.03em}
+  .pa.ok{color:var(--ok)}.pa.pending{color:var(--warn)}
+
+  .flagcol,.flagcell{text-align:center}
+  .act{display:inline-flex;gap:4px}
+  .act button{width:28px;height:28px;border-radius:7px;border:1px solid var(--line-strong);background:var(--panel);cursor:pointer;color:var(--muted);font-size:12px}
+  .act button:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* multi-line expand */
+  .expander{cursor:pointer}
+  .chev{display:inline-block;color:var(--muted-2);transition:.15s;font-size:11px}
+  tr.open .chev{transform:rotate(90deg);color:var(--accent-2)}
+  tr.open > td{background:#faf6ef!important}
+  tr.open > td:first-child{border-left:3px solid var(--accent-2)}
+  .lineitems{padding:0!important}
+  .li-wrap{background:#faf8f3;padding:18px 16px 20px 40px;border-bottom:1px solid var(--line-2)}
+  .li-cap{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-2);padding:14px 0 10px}
+  .li-table{width:max-content;max-width:100%;border-collapse:collapse;border-spacing:0;border:1.5px dotted #b08440;background:var(--panel);box-shadow:0 1px 3px rgba(21,17,13,.06)}
+  .li-table thead th{border:1.5px dotted #cbb98f;color:var(--accent-2);font-size:9px;letter-spacing:.1em;padding:8px 14px;position:static;background:#f0ebe1}
+  .li-table td{padding:10px 14px;font-size:11.5px;border:1.5px dotted #d8cdb8;background:var(--panel)}
+  .li-table tfoot td{border:1.5px dotted #cbb98f;border-top:1.5px dotted #b45309;font-weight:700;background:#f7f2e9;color:var(--ink)}
+  .badge-n{font-family:var(--mono);font-weight:700;color:var(--accent-2)}
+
+  .foot-note{padding:20px 32px 0;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="mast">
+    <div class="kicker">Books · Register</div>
+    <h1>Sales (Local)</h1>
+    <div class="meta">
+      <div class="m"><div class="k">Vouchers</div><div class="v">128</div></div>
+      <div class="m"><div class="k">Total Quantity</div><div class="v">14,260</div></div>
+      <div class="m"><div class="k">Basic Value</div><div class="v">48,62,140<small> ₹</small></div></div>
+      <div class="m"><div class="k">Pending</div><div class="v">3</div></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input placeholder="Search voucher, party or part…" />
+    </div>
+    <div class="tabs"><button class="on">All</button><button>Open</button><button>Closed</button></div>
+    <span class="lnk">Columns</span>
+    <span class="lnk dark">Export</span>
+  </div>
+
+  <!-- single-line -->
+  <div class="section-label">Single-line vouchers</div>
+  <div class="tblwrap" style="margin-bottom:30px">
+    <table>
+      <thead><tr>
+        <th>ID</th><th>Voucher No</th><th>Period</th><th>Date</th><th>Customer Name</th><th>Part Name</th><th>Ref No</th>
+        <th class="r">Inv Qty</th><th class="r">Act Qty</th><th class="c">UOM</th><th class="r">Unit Price</th><th class="r">PO Price</th><th class="r">Basic Value</th>
+        <th class="r">Pkgs</th><th>Token Ref</th><th class="r">Wt Qty</th><th class="r">Net Wt</th><th class="c">Status</th>
+        <th class="c">Gen</th><th class="c">Rec</th><th class="c">Price</th><th class="c">Mgmt</th><th class="c">Actions</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td class="id">371</td><td class="vno">SAL·0042</td><td class="muted">Jun 2026</td><td>09 Jun 2026</td>
+          <td>Daeseung Auto Parts India</td>
+          <td class="pname">BRKT BEARING MQ4I P0230<span class="sub">RMV3</span></td><td class="muted">DSAI20260219</td>
+          <td class="num">60</td><td class="num">60</td><td class="c muted">NOS</td><td class="num">350.00</td><td class="num">350.00</td><td class="num">21,000.00</td>
+          <td class="num">10</td><td><span class="toks">T-1001…1003</span></td><td class="num">60</td><td class="num">128.400</td>
+          <td class="c"><span class="st open"><span class="bar"></span>Open</span></td>
+          <td class="flagcell"><span class="ck on"></span></td><td class="flagcell"><span class="ck"></span></td><td class="flagcell"><span class="pa ok">OK</span></td><td class="flagcell"><span class="ck on"></span></td>
+          <td class="c"><div class="act"><button>✎</button><button>⋯</button></div></td>
+        </tr>
+        <tr>
+          <td class="id">370</td><td class="vno">SAL·0041</td><td class="muted">Jun 2026</td><td>09 Jun 2026</td>
+          <td>Daeseung Auto Parts India</td>
+          <td class="pname">BRKT BEARING SP3I BM150<span class="sub">RMV3</span></td><td class="muted">SO DSI JUN 2026</td>
+          <td class="num">100</td><td class="num">100</td><td class="c muted">NOS</td><td class="num">341.80</td><td class="num">341.80</td><td class="num">34,180.00</td>
+          <td class="num">10</td><td><span class="toks">T-2210, T-2211</span></td><td class="num">100</td><td class="num">214.000</td>
+          <td class="c"><span class="st open"><span class="bar"></span>Open</span></td>
+          <td class="flagcell"><span class="ck on"></span></td><td class="flagcell"><span class="ck"></span></td><td class="flagcell"><span class="pa pending">PEND</span></td><td class="flagcell"><span class="ck on"></span></td>
+          <td class="c"><div class="act"><button>✎</button><button>⋯</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- multi-line -->
+  <div class="section-label">Multi-line vouchers</div>
+  <div class="tblwrap">
+    <table>
+      <thead><tr>
+        <th></th><th>ID</th><th>Voucher No</th><th>Period</th><th>Date</th><th>Customer Name</th>
+        <th class="r">Lines</th><th class="r">Sum Qty</th><th class="r">Basic Value</th><th class="c">Status</th>
+        <th class="c">Gen</th><th class="c">Rec</th><th class="c">Price</th><th class="c">Mgmt</th><th>Remarks</th><th class="c">Actions</th>
+      </tr></thead>
+      <tbody>
+        <tr class="expander open">
+          <td><span class="chev">▶</span></td>
+          <td class="id">365</td><td class="vno">SAL·0036</td><td class="muted">Jun 2026</td><td>07 Jun 2026</td><td>Rane Engine Valves</td>
+          <td class="num"><span class="badge-n">3</span></td><td class="num">540</td><td class="num">1,86,420.00</td>
+          <td class="c"><span class="st open"><span class="bar"></span>Open</span></td>
+          <td class="flagcell"><span class="ck on"></span></td><td class="flagcell"><span class="ck"></span></td><td class="flagcell"><span class="pa ok">OK</span></td><td class="flagcell"><span class="ck"></span></td>
+          <td class="muted">Partial dispatch</td><td class="c"><div class="act"><button>✎</button><button>⋯</button></div></td>
+        </tr>
+        <tr><td class="lineitems" colspan="16">
+          <div class="li-wrap">
+            <table class="li-table">
+              <thead><tr><th>#</th><th>Part Name</th><th>Ref No</th><th class="r">Inv Qty</th><th class="r">Act Qty</th><th class="c">UOM</th><th class="r">Unit Price</th><th class="r">PO Price</th><th class="r">Basic Value</th><th class="r">Pkgs</th><th>Token Ref</th><th class="r">Wt Qty</th><th class="r">Net Wt</th></tr></thead>
+              <tbody>
+                <tr><td class="muted">1</td><td class="pname">BRKT BEARING MQ4I P0230</td><td class="muted">REV-A</td><td class="num">200</td><td class="num">200</td><td class="c muted">NOS</td><td class="num">350.00</td><td class="num">350.00</td><td class="num">70,000.00</td><td class="num">4</td><td><span class="toks">T-31…34</span></td><td class="num">200</td><td class="num">428.00</td></tr>
+                <tr><td class="muted">2</td><td class="pname">BRKT BEARING SP3I BM150</td><td class="muted">REV-A</td><td class="num">180</td><td class="num">180</td><td class="c muted">NOS</td><td class="num">341.80</td><td class="num">341.80</td><td class="num">61,524.00</td><td class="num">3</td><td><span class="toks">T-35…37</span></td><td class="num">180</td><td class="num">385.20</td></tr>
+                <tr><td class="muted">3</td><td class="pname">BRKT BEARING ZX9 K100</td><td class="muted">REV-B</td><td class="num">160</td><td class="num">160</td><td class="c muted">NOS</td><td class="num">343.10</td><td class="num">343.10</td><td class="num">54,896.00</td><td class="num">3</td><td><span class="toks">T-38…40</span></td><td class="num">160</td><td class="num">342.40</td></tr>
+              </tbody>
+              <tfoot><tr><td colspan="3" class="r" style="text-transform:uppercase;letter-spacing:.08em;font-size:10px;color:var(--muted)">Total</td><td class="num">540</td><td class="num">540</td><td></td><td></td><td></td><td class="num">1,86,420.00</td><td class="num">10</td><td></td><td class="num">540</td><td class="num">1,155.60</td></tr></tfoot>
+            </table>
+          </div>
+        </td></tr>
+
+        <tr class="expander">
+          <td><span class="chev">▶</span></td>
+          <td class="id">364</td><td class="vno">SAL·0035</td><td class="muted">Jun 2026</td><td>06 Jun 2026</td><td>Sundaram Fasteners</td>
+          <td class="num"><span class="badge-n">2</span></td><td class="num">300</td><td class="num">98,400.00</td>
+          <td class="c"><span class="st closed"><span class="bar"></span>Closed</span></td>
+          <td class="flagcell"><span class="ck on"></span></td><td class="flagcell"><span class="ck on"></span></td><td class="flagcell"><span class="pa ok">OK</span></td><td class="flagcell"><span class="ck on"></span></td>
+          <td class="muted">—</td><td class="c"><div class="act"><button>✎</button><button>⋯</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="foot-note">Single-line vouchers read on one line; multi-line vouchers open to reveal their line items.</div>
+
+</div>
+<script>
+  document.querySelectorAll('tr.expander').forEach(function(row){
+    row.addEventListener('click', function(){
+      var next = row.nextElementSibling;
+      var isLI = next && next.querySelector('.lineitems');
+      row.classList.toggle('open');
+      if(isLI){ next.style.display = next.style.display==='none' ? '' : 'none'; }
+    });
+  });
+</script>
+</body>
+</html>

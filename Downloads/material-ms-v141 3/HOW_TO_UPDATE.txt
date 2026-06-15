@@ -1,0 +1,37 @@
+DMS ERP — HOW TO UPDATE WITHOUT LOSING DATA
+============================================
+
+There are TWO SQL files. Use the right one:
+
+1) schema_v14.sql  — FULL INSTALL (DESTRUCTIVE)
+   - Run this ONLY ONCE, on a brand-new / empty database.
+   - It begins with "drop schema ... cascade", which DELETES ALL DATA
+     and rebuilds every table from scratch.
+   - NEVER run this again once you have real data — it will wipe it.
+
+2) update_safe.sql — LOGIC UPDATE (SAFE FOR LIVE DATA)
+   - Run this whenever you get new logic/feature changes.
+   - It ONLY replaces functions & views and adds any missing columns.
+   - It NEVER drops tables, never drops the schema, never deletes or
+     inserts business rows. Your ledgers, parts, vouchers, stock — all
+     untouched.
+   - It is safe to run as many times as you like.
+
+RULE OF THUMB
+   - First time setup .......... run schema_v14.sql  (once)
+   - Every update after that ... run update_safe.sql
+
+HOW TO RUN (Supabase)
+   - Open Supabase -> SQL Editor -> New query
+   - Paste the whole file -> Run.
+
+BACKUP FIRST (recommended before any update)
+   In Supabase: Database -> Backups (or use "pg_dump" if self-hosted).
+   Even though update_safe.sql is non-destructive, a backup before any
+   schema change is good practice.
+
+NOTE
+   If a future change needs a NEW TABLE, that one statement must be added
+   manually (create table if not exists ...). update_safe.sql intentionally
+   excludes table creation so it can never clobber data. When I give you a
+   change that needs a new table, I'll call it out explicitly.

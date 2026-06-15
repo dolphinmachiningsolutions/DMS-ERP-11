@@ -1,0 +1,76 @@
+DMS ERP — LIVE-SAVE TO GOOGLE SHEETS (wiring guide)
+===================================================
+
+WHY THIS ISN'T BUILT INTO THE APP
+---------------------------------
+Writing to a Google Sheet needs Google credentials and a server-side token
+exchange. A browser app (your React front-end) cannot safely hold those
+credentials — anyone could read them from the page — and Google blocks
+direct browser writes for that reason. So the data-moving piece must live
+OUTSIDE the app. Below are three ways, from simplest to most robust.
+
+WHAT TO SYNC
+------------
+Your data already lives in Supabase tables/views that are easy to pull:
+  - vouchers              (all books / documents, with location_id, free_ledger)
+  - voucher_lines         (line items)
+  - stock_cache           (current balances per part/location/bucket)
+  - stock_summary         (view: balances per part across buckets)
+  - stock_ledger          (every movement)
+Pick whichever "books" you want mirrored to a sheet.
+
+------------------------------------------------------------------
+OPTION A — NO-CODE CONNECTOR  (recommended; you chose this)
+------------------------------------------------------------------
+Use a service that syncs Supabase <-> Google Sheets without code.
+Good options: Whalesync, Stacksync, n8n (self-host = free), Latenode.
+
+Steps (Whalesync / Stacksync are the most turnkey):
+  1. Create an account on the connector.
+  2. "Add source" = Supabase. Paste:
+       - Project URL:  https://knvfhynvywwqpkomdhlb.supabase.co
+       - Key:          use the SERVICE ROLE key for full read (keep it secret),
+                       or the anon key if your RLS allows read (it does here).
+  3. "Add destination" = Google Sheets; authorise your Google account and
+     pick the target spreadsheet.
+  4. Map the table/view (e.g. `vouchers` or `stock_summary`) to a sheet tab.
+  5. Choose direction = one-way (Supabase -> Sheets) and a sync interval
+     (most offer near-real-time on row changes via Supabase webhooks).
+  6. Turn it on. New/changed rows now flow to the sheet automatically.
+
+To choose WHICH books sync: add one mapping per table/view you care about,
+each to its own tab. To stop one, disable that mapping.
+
+------------------------------------------------------------------
+OPTION B — GOOGLE APPS SCRIPT  (free, pull every few minutes)
+------------------------------------------------------------------
+Bound to your sheet; pulls from Supabase's REST API on a timer.
+  1. Open your Google Sheet -> Extensions -> Apps Script.
+  2. Paste a script that calls:
+       https://knvfhynvywwqpkomdhlb.supabase.co/rest/v1/stock_summary
+       headers: { apikey: <ANON_KEY>, Authorization: "Bearer <ANON_KEY>" }
+     then writes the JSON rows into the sheet (clear + setValues).
+  3. Add a time-driven trigger (e.g. every 5 minutes).
+  Note: this is "every few minutes", not truly live, and Apps Script has
+  size/time limits on very large sheets.
+
+------------------------------------------------------------------
+OPTION C — SUPABASE EDGE FUNCTION + DATABASE WEBHOOK  (true live push)
+------------------------------------------------------------------
+Most robust / instant, but needs deploying server code and a Google
+service-account:
+  1. Create a Google Cloud service account with Sheets API access; share
+     the target sheet with its email.
+  2. Write a Supabase Edge Function that receives a row-change webhook and
+     calls the Sheets API to append/update.
+  3. In Supabase: Database -> Webhooks -> create a webhook on the table(s)
+     you want, pointing at the Edge Function.
+  This pushes on every insert/update with no polling.
+
+SECURITY NOTE
+-------------
+The anon key is already public in the app, and your RLS currently allows
+full read, so a connector using the anon key can read everything. If you
+want tighter control, create a read-only Postgres role / restricted policy
+for the sync, or use the service-role key only inside a trusted connector
+(never in the browser).

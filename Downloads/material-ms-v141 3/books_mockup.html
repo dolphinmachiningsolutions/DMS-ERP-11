@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Books — Design Mockup</title>
+<style>
+  :root{
+    --bg:#f6f7fb; --panel:#fff; --ink:#0f1729; --ink-2:#3b465c; --muted:#64708a; --muted-2:#9aa3b5;
+    --line:#e7eaf1; --line-2:#eef0f5; --line-strong:#d3d8e3;
+    --brand:#3b5bdb; --brand-d:#2f49b3; --brand-bg:#eef2ff;
+    --head:#101a33; --head-2:#1b2747;
+    --ok:#0f9d6b; --ok-bg:#e3f7ee; --warn:#b7791f; --warn-bg:#fbf3e2; --err:#d64545; --err-bg:#fbe9e9;
+    --mono:"SF Mono","JetBrains Mono",Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;
+    --r:14px; --r-sm:9px;
+    --shadow:0 1px 2px rgba(15,23,41,.04),0 6px 18px rgba(15,23,41,.06);
+    --shadow-lg:0 10px 40px rgba(15,23,41,.12);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13px;-webkit-font-smoothing:antialiased}
+  .page{max-width:1320px;margin:0 auto;padding:28px 26px 60px}
+
+  /* ── page header ── */
+  .ph{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+  .ph .eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin-bottom:7px}
+  .ph h1{margin:0;font-size:25px;font-weight:760;letter-spacing:-.025em;color:var(--ink)}
+  .ph .sub{margin-top:6px;font-size:13.5px;color:var(--muted)}
+  .ph-actions{display:flex;gap:9px;align-items:center}
+
+  /* ── stat ribbon ── */
+  .ribbon{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brand)}
+  .stat .l{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:8px}
+  .stat .v{font-size:23px;font-weight:780;letter-spacing:-.02em;font-family:var(--mono)}
+  .stat .v small{font-size:13px;color:var(--muted);font-weight:600;font-family:var(--sans)}
+  .stat:nth-child(2)::before{background:#0f9d6b}.stat:nth-child(3)::before{background:#b7791f}.stat:nth-child(4)::before{background:#7048e8}
+
+  /* ── toolbar ── */
+  .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .search{flex:1;min-width:220px;position:relative}
+  .search input{width:100%;height:42px;border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:0 14px 0 40px;font-size:13.5px;background:var(--panel);font-family:inherit}
+  .search input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-bg)}
+  .search svg{position:absolute;left:13px;top:12px;color:var(--muted-2)}
+  .seg{display:inline-flex;background:var(--panel);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:3px;gap:2px}
+  .seg button{border:none;background:transparent;padding:8px 15px;font-size:12.5px;font-weight:650;color:var(--muted);border-radius:7px;cursor:pointer;font-family:inherit}
+  .seg button.on{background:var(--brand);color:#fff}
+  .btn{height:42px;padding:0 17px;border-radius:var(--r-sm);font-size:13px;font-weight:650;cursor:pointer;border:1px solid var(--line-strong);background:var(--panel);color:var(--ink-2);font-family:inherit;display:inline-flex;align-items:center;gap:7px}
+  .btn:hover{background:var(--bg)}
+  .btn.primary{background:var(--brand);color:#fff;border-color:var(--brand-d)}
+  .btn.primary:hover{background:var(--brand-d)}
+
+  /* ── table card ── */
+  .tcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+  .tcard-h{display:flex;align-items:center;justify-content:space-between;padding:15px 20px;border-bottom:1px solid var(--line-2)}
+  .tcard-h h2{margin:0;font-size:14px;font-weight:720}
+  .tcard-h .count{font-size:12px;color:var(--muted);font-weight:600}
+  .scroll{overflow-x:auto}
+  table{border-collapse:separate;border-spacing:0;width:100%;font-size:12.5px;min-width:max-content}
+  thead th{position:sticky;top:0;background:linear-gradient(180deg,var(--head),var(--head-2));color:#eef1f8;text-align:left;
+    font-weight:680;font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;padding:0;white-space:nowrap;z-index:2}
+  .th{display:flex;align-items:center;gap:9px;padding:15px 18px}
+  .th.r{justify-content:flex-end}.th.c{justify-content:center}
+  thead .fn{width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.09);display:inline-flex;align-items:center;justify-content:center;color:#aab3c9;cursor:pointer;flex-shrink:0}
+  thead .fn:hover{background:rgba(255,255,255,.2);color:#fff}
+  tbody td{padding:15px 18px;border-bottom:1px solid var(--line-2);white-space:nowrap;vertical-align:middle;color:var(--ink-2)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even) td{background:#fafbfd}
+  tbody tr:hover td{background:var(--brand-bg)}
+  .r{text-align:right}.c{text-align:center}
+  .num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+  .id{font-family:var(--mono);color:var(--muted);font-weight:600}
+  .vno{font-weight:700;color:var(--ink)}
+  .pname{font-weight:660;color:var(--ink)}
+  .toks{font-family:var(--mono);font-size:11px;color:var(--muted);max-width:150px;overflow:hidden;text-overflow:ellipsis;display:inline-block;white-space:nowrap;vertical-align:middle}
+  .muted{color:var(--muted)}
+
+  /* status pill */
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:30px;font-size:11px;font-weight:680;letter-spacing:.01em}
+  .pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .pill.open{background:var(--ok-bg);color:var(--ok)}
+  .pill.closed{background:#eef0f5;color:var(--muted)}
+
+  /* GAS-style check */
+  .ck{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;border:1.5px solid var(--line-strong);background:var(--panel)}
+  .ck.on{background:var(--ok);border-color:var(--ok);color:#fff}
+  .ck svg{display:none}.ck.on svg{display:block}
+  .pa{display:inline-flex;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700}
+  .pa.ok{background:var(--ok-bg);color:var(--ok)}.pa.pending{background:var(--warn-bg);color:var(--warn)}
+
+  .act{display:inline-flex;gap:6px}
+  .act button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line-strong);background:var(--panel);cursor:pointer;color:var(--muted);display:inline-flex;align-items:center;justify-content:center}
+  .act button:hover{background:var(--brand-bg);color:var(--brand);border-color:var(--brand)}
+
+  .flagcell{text-align:center;border-left:1px solid var(--line-2)}
+  thead th.flagcol .th{justify-content:center;border-left:1px solid rgba(255,255,255,.07)}
+
+  /* multi-line: expandable */
+  .expander{cursor:pointer}
+  .chev{display:inline-flex;width:24px;height:24px;border-radius:7px;background:var(--brand-bg);color:var(--brand);align-items:center;justify-content:center;transition:.15s}
+  tr.open .chev{transform:rotate(90deg);background:var(--brand);color:#fff}
+  tr.open td{background:#eaeffe!important}
+  .lineitems{padding:0!important;border-bottom:1px solid var(--line-2)!important}
+  .li-wrap{background:#f3f6fc;padding:16px 20px 18px 56px}
+  .li-cap{font-size:10.5px;font-weight:760;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .li-cap::before{content:"";width:14px;height:2px;background:var(--brand);border-radius:2px}
+  .li-table{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow);width:max-content;max-width:100%}
+  .li-table thead th{background:#eef1f7;color:var(--ink-2);position:static}
+  .li-table .th{padding:10px 15px;font-size:9.5px}
+  .li-table td{padding:11px 15px;font-size:12px;border-bottom:1px solid var(--line-2)}
+  .li-table tbody tr:hover td{background:#f7f9fd}
+  .li-table tfoot td{background:#f3f6fc;font-weight:760;border-top:1.5px solid var(--line-strong)}
+  .badge-n{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:20px;padding:0 7px;border-radius:20px;background:var(--brand-bg);color:var(--brand);font-weight:760;font-size:11px}
+
+  .legend{margin-top:18px;font-size:12px;color:var(--muted);display:flex;gap:18px;flex-wrap:wrap}
+  .legend b{color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="ph">
+    <div>
+      <div class="eyebrow">Books · Register</div>
+      <h1>Sales (Local)</h1>
+      <div class="sub">Every posted voucher, its line items, packages and approval state — in one place.</div>
+    </div>
+    <div class="ph-actions">
+      <div class="seg"><button class="on">All</button><button>Open</button><button>Closed</button></div>
+      <button class="btn">Columns</button>
+      <button class="btn primary">Export</button>
+    </div>
+  </div>
+
+  <div class="ribbon">
+    <div class="stat"><div class="l">Vouchers</div><div class="v">128</div></div>
+    <div class="stat"><div class="l">Total Quantity</div><div class="v">14,260</div></div>
+    <div class="stat"><div class="l">Basic Value</div><div class="v">₹ 48.6<small>L</small></div></div>
+    <div class="stat"><div class="l">Pending Approvals</div><div class="v">3</div></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input placeholder="Search voucher no, party, part…" />
+    </div>
+    <div class="seg"><button class="on">Single-line</button><button>Multi-line</button></div>
+  </div>
+
+  <!-- ───────── SINGLE-LINE: flat, everything inline ───────── -->
+  <div class="tcard" style="margin-bottom:26px">
+    <div class="tcard-h"><h2>Single-line vouchers</h2><span class="count">2 shown</span></div>
+    <div class="scroll">
+      <table>
+        <thead><tr>
+          <th><div class="th">ID</div></th>
+          <th><div class="th">Voucher No <span class="fn">▾</span></div></th>
+          <th><div class="th">Period</div></th>
+          <th><div class="th">Date</div></th>
+          <th><div class="th">Customer Name <span class="fn">▾</span></div></th>
+          <th><div class="th">Part Name <span class="fn">▾</span></div></th>
+          <th><div class="th">Ref No</div></th>
+          <th><div class="th r">Inv Qty</div></th>
+          <th><div class="th r">Act Qty</div></th>
+          <th><div class="th c">UOM</div></th>
+          <th><div class="th r">Unit Price</div></th>
+          <th><div class="th r">PO Price</div></th>
+          <th><div class="th r">Basic Value</div></th>
+          <th><div class="th r">Pkgs</div></th>
+          <th><div class="th">Token Ref</div></th>
+          <th><div class="th r">Wt Qty</div></th>
+          <th><div class="th r">Net Wt</div></th>
+          <th><div class="th c">Status</div></th>
+          <th class="flagcol"><div class="th">Gen</div></th>
+          <th class="flagcol"><div class="th">Rec</div></th>
+          <th class="flagcol"><div class="th">Price</div></th>
+          <th class="flagcol"><div class="th">Mgmt</div></th>
+          <th><div class="th c">Actions</div></th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td class="id">371</td>
+            <td class="vno">SAL/26-27/0042</td>
+            <td class="muted">Jun 2026</td>
+            <td>09-06-2026</td>
+            <td>Daeseung Auto Parts India</td>
+            <td class="pname">BRKT BEARING MQ4I P0230 RMV3</td>
+            <td class="muted">DSAI20260219</td>
+            <td class="num">60</td><td class="num">60</td><td class="c muted">NOS</td>
+            <td class="num">350.00</td><td class="num">350.00</td><td class="num">21,000.00</td>
+            <td class="num">10</td><td><span class="toks">T-1001, T-1002, T-1003</span></td><td class="num">60</td><td class="num">128.400</td>
+            <td class="c"><span class="pill open"><span class="dot"></span>Open</span></td>
+            <td class="flagcell"><span class="ck on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6 9 17l-5-5"/></svg></span></td>
+            <td class="flagcell"><span class="ck"></span></td>
+            <td class="flagcell"><span class="pa ok">OK</span></td>
+            <td class="flagcell"><span class="ck on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6 9 17l-5-5"/></svg></span></td>
+            <td class="c"><div class="act"><button>✎</button><button>⋯</button></div></td>
+          </tr>
+          <tr>
+            <td class="id">370</td>
+            <td class="vno">SAL/26-27/0041</td>
+            <td class="muted">Jun 2026</td>
+            <td>09-06-2026</td>
+            <td>Daeseung Auto Parts India</td>
+            <td class="pname">BRKT BEARING SP3I BM150 RMV3</td>
+            <td class="muted">SO DSI JUN 2026</td>
+            <td class="num">100</td><td class="num">100</td><td class="c muted">NOS</td>
+            <td class="num">341.80</td><td class="num">341.80</td><td class="num">34,180.00</td>
+            <td class="num">10</td><td><span class="toks">T-2210, T-2211</span></td><td class="num">100</td><td class="num">214.000</td>
+            <td class="c"><span class="pill open"><span class="dot"></span>Open</span></td>
+            <td class="flagcell"><span class="ck on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6 9 17l-5-5"/></svg></span></td>
+            <td class="flagcell"><span class="ck"></span></td>
+            <td class="flagcell"><span class="pa pending">Pending</span></td>
+            <td class="flagcell"><span class="ck on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6 9 17l-5-5"/></svg></span></td>
+            <td class="c"><div class="act"><button>✎</button><button>⋯</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ───────── MULTI-LINE: main row + expandable line items ───────── -->
+  <div class="tcard">
+    <div class="tcard-h"><h2>Multi-line vouchers</h2><span class="count">click a row to expand line items</span></div>
+    <div class="scroll">
+      <table>
+        <thead><tr>
+          <th><div class="th"></div></th>
+          <th><div class="th">ID</div></th>
+          <th><div class="th">Voucher No <span class="fn">▾</span></div></th>
+          <th><div class="th">Period</div></th>
+          <th><div class="th">Date</div></th>
+          <th><div class="th">Customer Name <span class="fn">▾</span></div></th>
+          <th><div class="th r">Lines</div></th>
+          <th><div class="th r">Sum Qty</div></th>
+          <th><div class="th r">Basic Value</div></th>
+          <th><div class="th c">Status</div></th>
+          <th class="flagcol"><div class="th">Gen</div></th>
+          <th class="flagcol"><div class="th">Rec</div></th>
+          <th class="flagcol"><div class="th">Price</div></th>
+          <th class="flagcol"><div class="th">Mgmt</div></th>
+          <th><div class="th">Remarks</div></th>
+          <th><div class="th c">Actions</div></th>
+        </tr></thead>
+        <tbody>
+          <tr class="expander open">
+            <td><span class="chev">›</span></td>
+            <td class="id">365</td><td class="vno">SAL/26-27/0036</td><td class="muted">Jun 2026</td><td>07-06-2026</td>
+            <td>Rane Engine Valves</td>
+            <td class="num"><span class="badge-n">3</span></td><td class="num">540</td><td class="num">1,86,420.00</td>
+            <td class="c"><span class="pill open"><span class="dot"></span>Open</span></td>
+            <td class="flagcell"><span class="ck on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6 9 17l-5-5"/></svg></span></td>
+            <td class="flagcell"><span class="ck"></span></td>
+            <td class="flagcell"><span class="pa ok">OK</span></td>
+            <td class="flagcell"><span class="ck"></span></td>
+            <td class="muted">Partial dispatch</td>
+            <td class="c"><div class="act"><button>✎</button><button>⋯</button></div></td>
+          </tr>
+          <tr><td class="lineitems" colspan="16">
+            <div class="li-wrap">
+              <div class="li-cap">Line items · 3</div>
+              <table class="li-table">
+                <thead><tr>
+                  <th><div class="th">#</div></th><th><div class="th">Part Name</div></th><th><div class="th">Ref No</div></th>
+                  <th><div class="th r">Inv Qty</div></th><th><div class="th r">Act Qty</div></th><th><div class="th c">UOM</div></th>
+                  <th><div class="th r">Unit Price</div></th><th><div class="th r">PO Price</div></th><th><div class="th r">Basic Value</div></th>
+                  <th><div class="th r">Pkgs</div></th><th><div class="th">Token Ref</div></th><th><div class="th r">Wt Qty</div></th><th><div class="th r">Net Wt</div></th>
+                </tr></thead>
+                <tbody>
+                  <tr><td class="muted">1</td><td class="pname">BRKT BEARING MQ4I P0230</td><td class="muted">REV-A</td><td class="num">200</td><td class="num">200</td><td class="c muted">NOS</td><td class="num">350.00</td><td class="num">350.00</td><td class="num">70,000.00</td><td class="num">4</td><td><span class="toks">T-31, T-32, T-33, T-34</span></td><td class="num">200</td><td class="num">428.00</td></tr>
+                  <tr><td class="muted">2</td><td class="pname">BRKT BEARING SP3I BM150</td><td class="muted">REV-A</td><td class="num">180</td><td class="num">180</td><td class="c muted">NOS</td><td class="num">341.80</td><td class="num">341.80</td><td class="num">61,524.00</td><td class="num">3</td><td><span class="toks">T-35, T-36, T-37</span></td><td class="num">180</td><td class="num">385.20</td></tr>
+                  <tr><td class="muted">3</td><td class="pname">BRKT BEARING ZX9 K100</td><td class="muted">REV-B</td><td class="num">160</td><td class="num">160</td><td class="c muted">NOS</td><td class="num">343.10</td><td class="num">343.10</td><td class="num">54,896.00</td><td class="num">3</td><td><span class="toks">T-38, T-39, T-40</span></td><td class="num">160</td><td class="num">342.40</td></tr>
+                </tbody>
+                <tfoot><tr><td colspan="3" class="r" style="text-transform:uppercase;letter-spacing:.06em;font-size:10.5px">Total</td><td class="num">540</td><td class="num">540</td><td></td><td></td><td></td><td class="num">1,86,420.00</td><td class="num">10</td><td></td><td class="num">540</td><td class="num">1,155.60</td></tr></tfoot>
+              </table>
+            </div>
+          </td></tr>
+
+          <tr class="expander">
+            <td><span class="chev">›</span></td>
+            <td class="id">364</td><td class="vno">SAL/26-27/0035</td><td class="muted">Jun 2026</td><td>06-06-2026</td>
+            <td>Sundaram Fasteners</td>
+            <td class="num"><span class="badge-n">2</span></td><td class="num">300</td><td class="num">98,400.00</td>
+            <td class="c"><span class="pill closed"><span class="dot"></span>Closed</span></td>
+            <td class="flagcell"><span class="ck on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6 9 17l-5-5"/></svg></span></td>
+            <td class="flagcell"><span class="ck on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6 9 17l-5-5"/></svg></span></td>
+            <td class="flagcell"><span class="pa ok">OK</span></td>
+            <td class="flagcell"><span class="ck on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6 9 17l-5-5"/></svg></span></td>
+            <td class="muted">—</td>
+            <td class="c"><div class="act"><button>✎</button><button>⋯</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><b>Single-line</b> vouchers show everything on one flat row — no expand.</span>
+    <span><b>Multi-line</b> vouchers show totals on the main row; click to reveal the line items.</span>
+  </div>
+
+</div>
+<script>
+  document.querySelectorAll('tr.expander').forEach(function(row){
+    row.addEventListener('click', function(){
+      var next = row.nextElementSibling;
+      var isLI = next && next.querySelector('.lineitems');
+      row.classList.toggle('open');
+      // toggle the attached line-items row if present
+      if(isLI){ next.style.display = next.style.display==='none' ? '' : 'none'; }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Books — Clean detail redesign</title>
+<style>
+  :root{
+    --ink:#1f2733; --ink-2:#48515f; --muted:#6b7480; --muted-2:#929aa6;
+    --line:#e2e6ec; --line-2:#eef1f5; --line-strong:#cdd3dc;
+    --navy:#1e2940; --navy-2:#2a3754;
+    --sub-band:#eef1f6; --sub-row:#f8fafc; --sub-row-alt:#f3f6f9;
+    --mono:"Consolas","SF Mono",Menlo,monospace; --sans:"Segoe UI",-apple-system,Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#eceef1;font-family:var(--sans);font-size:13px;color:var(--ink);padding:26px}
+  .hint{margin:0 0 16px;color:var(--muted)}
+
+  .scroll{overflow-x:auto;border:1px solid var(--line-strong);border-radius:8px;background:#fff}
+  table{border-collapse:collapse;width:100%;min-width:max-content}
+
+  /* main header */
+  thead.main-h th{background:var(--navy);color:#eaeef5;text-align:left;font-size:10.5px;font-weight:600;
+    text-transform:uppercase;letter-spacing:.05em;padding:14px 16px;white-space:nowrap;border-right:1px solid rgba(255,255,255,.06)}
+  thead.main-h th:last-child{border-right:none}
+  thead.main-h th.r{text-align:right}
+
+  /* main voucher rows */
+  tr.v td{padding:15px 16px;border-bottom:1px solid var(--line);white-space:nowrap;color:var(--ink-2);background:#fff}
+  tr.v:hover td{background:#f7f9fb}
+  tr.v.open td{background:#eef1f6}
+  tr.v td.r{text-align:right}
+  .vno{font-weight:600;color:var(--ink)}
+  .id{font-family:var(--mono);color:var(--muted);font-size:12px}
+  .muted{color:var(--muted)}
+  .chev{display:inline-block;width:18px;text-align:center;color:var(--muted);transition:.15s}
+  tr.v.open .chev{transform:rotate(90deg);color:var(--ink)}
+
+  /* ── detail container: clearly a child block ── */
+  tr.detail > td{padding:0;background:var(--sub-band);
+    border-bottom:1px solid var(--line-strong);
+    box-shadow:inset 0 3px 0 var(--navy); /* dark rule under the voucher = "this belongs to it" */
+  }
+  .detail-inner{padding:14px 18px 16px 40px}      /* indent: detail sits in from the left */
+  .detail-cap{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+
+  table.sub{border:1px solid var(--line-strong);border-radius:6px;overflow:hidden;width:100%;min-width:760px;background:#fff}
+  table.sub th{background:var(--sub-band);color:var(--ink-2);text-align:center;font-size:10px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.04em;padding:10px 12px;white-space:nowrap;border-bottom:1px solid var(--line-strong);border-right:1px solid var(--line-2)}
+  table.sub th:last-child{border-right:none}
+  table.sub th.r{text-align:right}
+  table.sub td{padding:11px 12px;text-align:center;font-size:12px;color:var(--ink-2);border-bottom:1px solid var(--line-2);border-right:1px solid var(--line-2);white-space:nowrap;background:#fff}
+  table.sub td:last-child{border-right:none}
+  table.sub tbody tr:nth-child(even) td{background:var(--sub-row-alt)}
+  table.sub td.r{text-align:right;font-family:var(--mono);font-weight:600;color:var(--ink)}
+  table.sub td.name{text-align:left;font-weight:600;color:var(--ink)}
+  table.sub th.l{text-align:left}
+  table.sub tfoot td{background:var(--sub-band);font-weight:700;color:var(--ink);border-top:1px solid var(--line-strong);border-bottom:none;font-family:var(--mono)}
+  table.sub tfoot td.lbl{font-family:var(--sans);text-align:right;text-transform:uppercase;font-size:10px;letter-spacing:.04em;color:var(--muted)}
+</style>
+</head>
+<body>
+<p class="hint">Redesign: the voucher's line items sit in an indented, clearly-separated detail block (dark rule under the voucher ties them together). The sub-table is self-contained, evenly spaced, centered values, money right-aligned. Click a row.</p>
+<div class="scroll">
+  <table>
+    <thead class="main-h"><tr>
+      <th></th><th>ID</th><th>Voucher No</th><th>Voucher Period</th><th>Voucher Date</th><th>Posting Period</th><th>Posting Date</th><th>Vendor Name</th>
+      <th class="r">Lines</th><th class="r">Sum Qty</th><th class="r">Basic Value</th><th>Status</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+      <tr class="v">
+        <td><span class="chev">▶</span></td><td class="id">PUR002</td><td class="vno">TEST PO 002</td><td class="muted">Jun 2026</td><td>06/06/2026</td><td class="muted">Jun 2026</td><td>09/06/2026</td><td>NMC</td>
+        <td class="r">2</td><td class="r">5,000.00</td><td class="r">9,04,054.99</td><td class="muted">Open</td><td class="muted">✎ ✐ 🗑</td>
+      </tr>
+
+      <tr class="v open">
+        <td><span class="chev">▶</span></td><td class="id">PUR001</td><td class="vno">TEST PI 001</td><td class="muted">Jun 2026</td><td>06/06/2026</td><td class="muted">Jun 2026</td><td>09/06/2026</td><td>NMC</td>
+        <td class="r">1</td><td class="r">500.00</td><td class="r">90,229.18</td><td class="muted">Open</td><td class="muted">✎ ✐ 🗑</td>
+      </tr>
+      <tr class="detail">
+        <td colspan="13">
+          <div class="detail-inner">
+            <div class="detail-cap">Line items</div>
+            <table class="sub">
+              <thead><tr>
+                <th>Line</th><th class="l">Part Name</th><th class="l">Ref No</th><th>Inv Qty</th><th>Act Qty</th><th>UOM</th>
+                <th class="r">Unit Price</th><th class="r">PO Price</th><th class="r">Basic Value</th><th>Pkgs</th><th>Token Ref</th><th>Wt Qty</th><th>Net Wt</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td>1</td><td class="name">SP2i LH NMC</td><td class="muted" style="text-align:left">TEST PO 001</td><td>500.00</td><td>500.00</td><td class="muted">Nos</td>
+                  <td class="r">180.82</td><td class="r">180.82</td><td class="r">90,229.18</td><td>1</td><td>1</td><td>500.00</td><td>500.00</td>
+                </tr>
+              </tbody>
+              <tfoot><tr>
+                <td colspan="3" class="lbl">Total</td><td>500.00</td><td>500.00</td><td></td><td></td><td></td><td class="r">90,229.18</td><td>1</td><td></td><td>500.00</td><td>500.00</td>
+              </tr></tfoot>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

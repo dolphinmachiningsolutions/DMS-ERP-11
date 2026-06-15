@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Books — Dense grid + detail panel</title>
+<style>
+  :root{
+    --ink:#15191f; --ink-2:#3a4150; --muted:#697competitors; --muted:#69707e; --muted-2:#969cab;
+    --line:#d4d8df; --line-2:#e4e7ec; --line-strong:#b8bdc7;
+    --head:#1b1f27; --head-line:#000;
+    --row:#ffffff; --row-alt:#f6f7f9; --row-hover:#eef3fb; --sel:#e4ecf8;
+    --accent:#1c1c1c; --pos:#137a43; --neg:#b3261e;
+    --mono:"Consolas","SF Mono",Menlo,monospace; --sans:"Segoe UI",-apple-system,Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#dfe2e7;font-family:var(--sans);font-size:12.5px;color:var(--ink)}
+  .app{display:flex;flex-direction:column;height:100vh}
+
+  /* toolbar */
+  .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--line-strong)}
+  .bar .title{font-size:14px;font-weight:700;margin-right:8px}
+  .bar input{height:30px;border:1px solid var(--line-strong);border-radius:5px;padding:0 10px;font-size:12.5px;min-width:240px;font-family:inherit}
+  .bar .btn{height:30px;padding:0 12px;border:1px solid var(--line-strong);background:#fff;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;color:var(--ink-2)}
+  .bar .btn.dark{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .bar .sp{flex:1}
+
+  /* dense grid */
+  .gridwrap{flex:1;overflow:auto;background:#fff}
+  table{border-collapse:collapse;width:100%;min-width:max-content;font-size:12px}
+  thead th{position:sticky;top:0;z-index:2;background:var(--head);color:#eef1f6;text-align:left;
+    font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;padding:7px 10px;white-space:nowrap;
+    border-right:1px solid #3a4150;border-bottom:2px solid #000}
+  thead th.r{text-align:right} thead th.c{text-align:center}
+  tbody td{padding:5px 10px;border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2);white-space:nowrap;height:28px}
+  tbody tr:nth-child(even) td{background:var(--row-alt)}
+  tbody tr:hover td{background:var(--row-hover);cursor:pointer}
+  tbody tr.sel td{background:var(--sel)}
+  .r{text-align:right} .c{text-align:center}
+  .num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .vno{font-weight:600} .id{font-family:var(--mono);color:var(--muted)} .muted{color:var(--muted)}
+  .pill{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10.5px;font-weight:700}
+  .pill.open{background:#e3f3e9;color:var(--pos)} .pill.closed{background:#eceef1;color:var(--muted)}
+  .ck{display:inline-block;width:14px;height:14px;border:1px solid var(--line-strong);border-radius:3px;vertical-align:middle}
+  .ck.on{background:var(--pos);border-color:var(--pos)}
+
+  /* detail panel (slide-in) */
+  .overlay{position:fixed;inset:0;background:rgba(10,14,20,.35);display:none}
+  .overlay.show{display:block}
+  .panel{position:fixed;top:0;right:0;bottom:0;width:min(940px,92vw);background:#fff;box-shadow:-8px 0 30px rgba(0,0,0,.18);
+    transform:translateX(100%);transition:transform .18s ease;display:flex;flex-direction:column}
+  .panel.show{transform:translateX(0)}
+  .ph{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 20px;border-bottom:2px solid var(--accent);background:#fafbfc}
+  .ph h2{margin:0;font-size:16px;font-weight:700}
+  .ph .sub{margin-top:4px;color:var(--muted);font-size:12px}
+  .ph .x{border:1px solid var(--line-strong);background:#fff;width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:15px}
+  .meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-bottom:1px solid var(--line);background:#fff}
+  .meta-grid .m{padding:10px 16px;border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+  .meta-grid .m .k{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:3px}
+  .meta-grid .m .v{font-size:13px;font-weight:600}
+  .panel .body{flex:1;overflow:auto;padding:16px 20px}
+  .li-cap{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:8px}
+  table.det{border-collapse:collapse;width:100%;font-size:12px}
+  table.det th{background:#eef0f3;color:var(--ink-2);text-align:right;font-size:10px;font-weight:700;text-transform:uppercase;
+    padding:8px 10px;border:1px solid var(--line);white-space:nowrap}
+  table.det th.l{text-align:left} table.det th.c{text-align:center}
+  table.det td{padding:7px 10px;border:1px solid var(--line-2);text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  table.det td.l{text-align:left;font-family:var(--sans)} table.det td.c{text-align:center;font-family:var(--sans)}
+  table.det td.name{text-align:left;font-family:var(--sans);font-weight:600}
+  table.det tbody tr:nth-child(even) td{background:var(--row-alt)}
+  table.det tfoot td{background:#eef0f3;font-weight:700;border:1px solid var(--line);border-top:2px solid var(--accent)}
+  .pf{display:flex;gap:8px;padding:12px 20px;border-top:1px solid var(--line);background:#fafbfc}
+  .pf .btn{height:32px;padding:0 14px;border:1px solid var(--line-strong);background:#fff;border-radius:5px;font-weight:600;cursor:pointer;font-size:12px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="bar">
+    <span class="title">Purchase</span>
+    <input placeholder="Search voucher, vendor, part…" />
+    <span class="sp"></span>
+    <button class="btn">Columns</button>
+    <button class="btn">Filter</button>
+    <button class="btn dark">Export</button>
+  </div>
+
+  <div class="gridwrap">
+    <table>
+      <thead><tr>
+        <th>ID</th><th>Voucher No</th><th>Voucher Period</th><th>Voucher Date</th><th>Posting Period</th><th>Posting Date</th><th>Vendor Name</th>
+        <th class="r">Lines</th><th class="r">Sum Qty</th><th class="r">Basic Value</th><th class="c">Status</th>
+        <th class="c">Gen</th><th class="c">Rec</th><th class="c">Price</th><th class="c">Mgmt</th><th>Remarks</th>
+      </tr></thead>
+      <tbody>
+        <tr onclick="openPanel(this)" class="sel">
+          <td class="id">P0002</td><td class="vno">TEST PO 002</td><td class="muted">Jun 2026</td><td>06/06/2026</td><td class="muted">Jun 2026</td><td>09/06/2026</td><td>NMC</td>
+          <td class="num">2</td><td class="num">5,000.00</td><td class="num">9,04,054.99</td><td class="c"><span class="pill open">Open</span></td>
+          <td class="c"><span class="ck on"></span></td><td class="c"><span class="ck on"></span></td><td class="c"><span class="ck"></span></td><td class="c"><span class="ck on"></span></td><td class="muted">—</td>
+        </tr>
+        <tr onclick="openPanel(this)">
+          <td class="id">P0001</td><td class="vno">TEST PI 001</td><td class="muted">Jun 2026</td><td>06/06/2026</td><td class="muted">Jun 2026</td><td>09/06/2026</td><td>NMC</td>
+          <td class="num">1</td><td class="num">500.00</td><td class="num">90,229.18</td><td class="c"><span class="pill closed">Closed</span></td>
+          <td class="c"><span class="ck on"></span></td><td class="c"><span class="ck"></span></td><td class="c"><span class="ck on"></span></td><td class="c"><span class="ck"></span></td><td class="muted">Partial</td>
+        </tr>
+        <tr onclick="openPanel(this)">
+          <td class="id">P0000</td><td class="vno">SF PI 0099</td><td class="muted">May 2026</td><td>28/05/2026</td><td class="muted">May 2026</td><td>30/05/2026</td><td>SF</td>
+          <td class="num">3</td><td class="num">1,240.00</td><td class="num">2,18,640.00</td><td class="c"><span class="pill open">Open</span></td>
+          <td class="c"><span class="ck on"></span></td><td class="c"><span class="ck on"></span></td><td class="c"><span class="ck on"></span></td><td class="c"><span class="ck on"></span></td><td class="muted">—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="overlay" id="ov" onclick="closePanel()"></div>
+<div class="panel" id="pn">
+  <div class="ph">
+    <div><h2>TEST PO 002</h2><div class="sub">Purchase · NMC · 06/06/2026</div></div>
+    <button class="x" onclick="closePanel()">✕</button>
+  </div>
+  <div class="meta-grid">
+    <div class="m"><div class="k">Voucher Period</div><div class="v">Jun 2026</div></div>
+    <div class="m"><div class="k">Posting Date</div><div class="v">09/06/2026</div></div>
+    <div class="m"><div class="k">Sum Qty</div><div class="v">5,000.00</div></div>
+    <div class="m"><div class="k">Basic Value</div><div class="v">₹ 9,04,054.99</div></div>
+  </div>
+  <div class="body">
+    <div class="li-cap">Line items</div>
+    <table class="det">
+      <thead><tr>
+        <th class="c">Line</th><th class="l">Part Name</th><th class="l">Ref No</th><th>Inv Qty</th><th>Act Qty</th><th class="c">UOM</th>
+        <th>Unit Price</th><th>PO Price</th><th>Basic Value</th><th class="c">Pkgs</th><th class="c">Token</th><th>Wt Qty</th><th>Net Wt</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="c">1</td><td class="name">SP2i LH NMC</td><td class="l muted">TEST PO 001</td><td>4,500.00</td><td>4,501.00</td><td class="c">Nos</td><td>180.81</td><td>180.82</td><td>8,13,825.81</td><td class="c">1</td><td class="c">1</td><td>4,501.00</td><td>4,501.00</td></tr>
+        <tr><td class="c">2</td><td class="name">SP2i LH NMC</td><td class="l muted">TEST PO 001</td><td>499.00</td><td>499.00</td><td class="c">Nos</td><td>180.82</td><td>180.82</td><td>90,229.18</td><td class="c">1</td><td class="c">1</td><td>499.00</td><td>499.00</td></tr>
+      </tbody>
+      <tfoot><tr><td class="l" colspan="3">Total</td><td>5,000.00</td><td>5,000.00</td><td></td><td></td><td></td><td>9,04,054.99</td><td class="c">2</td><td></td><td>5,000.00</td><td>5,000.00</td></tr></tfoot>
+    </table>
+  </div>
+  <div class="pf">
+    <button class="btn">✎ Edit</button><button class="btn">✐ Mark for Edit</button><button class="btn">🗑 Mark for Delete</button>
+  </div>
+</div>
+
+<script>
+  function openPanel(row){
+    document.querySelectorAll("tbody tr").forEach(t=>t.classList.remove("sel"));
+    row.classList.add("sel");
+    document.getElementById("ov").classList.add("show");
+    document.getElementById("pn").classList.add("show");
+  }
+  function closePanel(){
+    document.getElementById("ov").classList.remove("show");
+    document.getElementById("pn").classList.remove("show");
+  }
+</script>
+</body>
+</html>

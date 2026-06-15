@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Books — Sub-row full-width test</title>
+<style>
+  :root{
+    --ink:#1a2230; --ink-2:#39424f; --muted:#5b6675; --line:#cdd2da; --line-2:#dfe3ea; --line-strong:#aeb5c0;
+    --mono:"Consolas",monospace; --sans:"Segoe UI",-apple-system,Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#eceef2;font-family:var(--sans);font-size:13px;color:var(--ink);padding:24px}
+  .scroll{overflow-x:auto;border:1px solid #d9dde4;background:#fff}
+  table.main{border-collapse:separate;border-spacing:0;min-width:max-content;width:100%}
+  table.main > thead > tr > th{background:#16203a;color:#eef1f7;text-align:center;font-size:10.5px;font-weight:650;
+    text-transform:uppercase;letter-spacing:.06em;padding:13px 16px;white-space:nowrap;border-right:1px solid rgba(255,255,255,.07)}
+  table.main > tbody > tr > td{padding:13px 16px;border-bottom:1px solid var(--line-2);border-right:1px solid var(--line-2);
+    white-space:nowrap;text-align:center;color:var(--ink-2)}
+  tr.main-row > td{background:#e9edf3;cursor:pointer}
+  .num{text-align:right!important;font-family:var(--mono);font-weight:600;color:var(--ink)}
+  .muted{color:var(--muted)} .vno{font-family:var(--mono);font-weight:600}
+
+  /* attached sub-row: cell is the full-width band, sub-table fills it */
+  td.sub-cell{padding:0 0 0 36px!important;border:none!important;border-bottom:3px solid #1c1c1c!important;background:#e6e8ec;box-shadow:inset 4px 0 0 #1c1c1c, inset 0 3px 0 #1c1c1c}
+  table.sub{border-collapse:collapse;border-spacing:0;width:100%;min-width:100%;background:#f0f1f3;table-layout:auto}
+  table.sub th{background:#e3e5ea;color:#1c1c1c;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+    padding:10px 14px;text-align:center;white-space:nowrap;border-bottom:1px solid #1c1c1c;border-right:1px solid #c4c7cf}
+  table.sub td{padding:11px 14px;font-size:12px;text-align:center;border-bottom:1px solid #e4e6ea;border-right:1px solid #edeef1;color:var(--ink-2);white-space:nowrap;background:#fafbfc}
+  table.sub tr:last-child td{border-bottom:none}
+  table.sub .spacer{width:100%!important;border-right:none!important}
+  table.sub tfoot td{background:#e3e5ea;font-weight:700;color:#1c1c1c;font-family:var(--mono);border-top:2px solid #1c1c1c}
+  table.sub tfoot td.lbl{font-family:var(--sans);text-transform:uppercase;font-size:10px;text-align:right}
+  .hint{margin:0 0 14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<p class="hint">Test: does the sub-block fill the FULL main-table width (borders to the right edge), one main color + lighter sub, centered values except money? Scroll right to check the edge.</p>
+<div class="scroll">
+  <table class="main">
+    <thead><tr>
+      <th></th><th>ID</th><th>Voucher No</th><th>Voucher Period</th><th>Voucher Date</th><th>Posting Period</th><th>Posting Date</th><th>Vendor Name</th>
+      <th>Lines</th><th>Sum Qty</th><th class="num">Basic Value</th><th>Status</th><th>Gen</th><th>Rec</th><th>Remarks</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+      <tr class="main-row">
+        <td>▼</td><td class="muted">PUR002</td><td class="vno">TEST PO 002</td><td class="muted">Jun 2026</td><td>06/06/2026</td><td class="muted">Jun 2026</td><td>09/06/2026</td><td>NMC</td>
+        <td>2</td><td>5,000.00</td><td class="num">9,04,054.99</td><td class="muted">Open</td><td>✓</td><td>✓</td><td class="muted">—</td><td class="muted">✎ ✐ 🗑</td>
+      </tr>
+      <tr>
+        <td class="sub-cell" colspan="16">
+          <table class="sub">
+            <thead><tr>
+              <th>Line</th><th>Part Name</th><th>Ref No</th><th>Inv Qty</th><th>Act Qty</th><th>UOM</th>
+              <th class="num">Unit Price</th><th class="num">PO Price</th><th class="num">Basic Value</th><th>Pkgs</th><th>Token Ref</th><th>Wt Qty</th><th>Net Wt</th><th class="spacer"></th>
+            </tr></thead>
+            <tbody>
+              <tr><td>1</td><td>SP2i LH NMC</td><td class="muted">TEST PO 001</td><td>4,500.00</td><td>4,501.00</td><td class="muted">Nos</td>
+                <td class="num">180.81</td><td class="num">180.82</td><td class="num">8,13,825.81</td><td>1</td><td>1</td><td>4,501.00</td><td>4,501.00</td><td class="spacer"></td></tr>
+              <tr><td>2</td><td>SP2i LH NMC</td><td class="muted">TEST PO 001</td><td>499.00</td><td>499.00</td><td class="muted">Nos</td>
+                <td class="num">180.82</td><td class="num">180.82</td><td class="num">90,229.18</td><td>1</td><td>1</td><td>499.00</td><td>499.00</td><td class="spacer"></td></tr>
+            </tbody>
+            <tfoot><tr><td colspan="3" class="lbl">Total</td><td>5,000.00</td><td></td><td></td><td></td><td></td><td class="num">9,04,054.99</td><td>2.00</td><td></td><td>5,000.00</td><td>5,000.00</td><td class="spacer"></td></tr></tfoot>
+          </table>
+        </td>
+      </tr>
+      <tr class="main-row">
+        <td>▶</td><td class="muted">PUR001</td><td class="vno">TEST PI 001</td><td class="muted">Jun 2026</td><td>06/06/2026</td><td class="muted">Jun 2026</td><td>09/06/2026</td><td>NMC</td>
+        <td>2</td><td>5,000.00</td><td class="num">9,04,054.99</td><td class="muted">Open</td><td>✓</td><td>✓</td><td class="muted">—</td><td class="muted">✎ ✐ 🗑</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
